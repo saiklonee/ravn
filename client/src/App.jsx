@@ -20,7 +20,7 @@ const App = () => {
   return (
     <>
       <ReactLenis root options={{ autoRaf: false }} ref={lenisRef} />
-      <Header />
+      {/* <Header /> */}
       <main className="w-full h-full scrollbar-none">
         <Routes>
           <Route path="/" element={<Home />} />
