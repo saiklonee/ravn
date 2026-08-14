@@ -21,71 +21,35 @@ const ClothingConfigurator = () => {
   const rightArrowRef = useRef(null);
 
   // =================================
-  // MALE MODEL - DEFAULT OUTFIT
+  // ANGLE → INDEX MAPPING
   // =================================
-
-  const maleModels = {
-    "-135": "/model/model-6.png",
-    "-90": "/model/model-4.png",
-    "-45": "/model/model-5.png",
-    0: "/model/model-1.png",
-    45: "/model/model-7.png",
-    90: "/model/model-2.png",
-    135: "/model/model-8.png",
-    180: "/model/model-3.png",
+  const angleToIndex = {
+    "-135": 6,
+    "-90": 4,
+    "-45": 5,
+    0: 1,
+    45: 7,
+    90: 2,
+    135: 8,
+    180: 3,
   };
 
   // =================================
-  // MALE MODEL - BLUE TSHIRT
+  // DYNAMIC MODEL PATH
   // =================================
-  // For now all 8 positions use the
-  // same image. Replace them later.
-
-  const maleBlueTshirtModels = {
-    "-135": "/model/male-model-211-1.png",
-    "-90": "/model/male-model-211-1.png",
-    "-45": "/model/male-model-211-1.png",
-    0: "/model/male-model-211-1.png",
-    45: "/model/male-model-211-1.png",
-    90: "/model/male-model-211-1.png",
-    135: "/model/male-model-211-1.png",
-    180: "/model/male-model-211-1.png",
-  };
-
-  const maleThreeOneOneModels = {
-    "-135": "/model/male-model-311-1.png",
-    "-90": "/model/male-model-311-1.png",
-    "-45": "/model/male-model-311-1.png",
-    0: "/model/male-model-311-1.png",
-    45: "/model/male-model-311-1.png",
-    90: "/model/male-model-311-1.png",
-    135: "/model/male-model-311-1.png",
-    180: "/model/male-model-311-1.png",
-  };
-
-  // =================================
-  // FEMALE MODELS
-  // =================================
-  // For now all 8 positions use the
-  // same female image.
-
-  const femaleModels = {
-    "-135": "/model/female-model-111-1.png",
-    "-90": "/model/female-model-111-1.png",
-    "-45": "/model/female-model-111-1.png",
-    0: "/model/female-model-111-1.png",
-    45: "/model/female-model-111-1.png",
-    90: "/model/female-model-111-1.png",
-    135: "/model/female-model-111-1.png",
-    180: "/model/female-model-111-1.png",
+  const getModelImage = (ang) => {
+    const idx = angleToIndex[String(ang)];
+    const t = topwearIndex + 1;
+    const b = bottomwearIndex + 1;
+    const s = shoesIndex + 1;
+    return `/model/${gender}-model-${t}${b}${s}-${idx}.png`;
   };
 
   // =================================
   // CLOTHING DATA
   // =================================
-
   const topwear = [
-    "/cloths/topwear/red-shirt.png",
+    "/cloths/topwear/bonker-bhw-tshirt.png",
     "/cloths/topwear/bonker-cc.png",
     "/cloths/topwear/bonker-hw-tshirt.png",
   ];
@@ -101,34 +65,11 @@ const ClothingConfigurator = () => {
   ];
 
   // =================================
-  // SELECT CURRENT MODEL
-  // =================================
-
-  let models;
-
-  if (gender === "female") {
-    models = femaleModels;
-  } else if (topwearIndex === 1) {
-    // Third T-shirt selected
-    models = maleBlueTshirtModels;
-  } else if (topwearIndex === 2) {
-    models = maleThreeOneOneModels;
-  } else {
-    // Normal male model
-    models = maleModels;
-  }
-
-  // =================================
   // GENDER SELECTION
   // =================================
-
   const selectGender = (selectedGender) => {
     setGender(selectedGender);
-
-    // Start from front
     setAngle(0);
-
-    // Reset image rotation
     gsap.set(imageRef.current, {
       rotate: 0,
     });
@@ -137,16 +78,12 @@ const ClothingConfigurator = () => {
   // =================================
   // MODEL ROTATION
   // =================================
-
   const rotateRight = () => {
     const nextAngle = angle === 180 ? -135 : angle + 45;
 
-    // Right arrow click effect
     gsap.fromTo(
       rightArrowRef.current,
-      {
-        scale: 1,
-      },
+      { scale: 1 },
       {
         scale: 0.75,
         duration: 0.08,
@@ -156,13 +93,11 @@ const ClothingConfigurator = () => {
       },
     );
 
-    // Model rotation
     gsap.to(imageRef.current, {
       duration: 0.25,
       ease: "power2.inOut",
       onComplete: () => {
         setAngle(nextAngle);
-
         gsap.set(imageRef.current, {
           rotate: 0,
         });
@@ -173,12 +108,9 @@ const ClothingConfigurator = () => {
   const rotateLeft = () => {
     const nextAngle = angle === -135 ? 180 : angle - 45;
 
-    // Left arrow click effect
     gsap.fromTo(
       leftArrowRef.current,
-      {
-        scale: 1,
-      },
+      { scale: 1 },
       {
         scale: 0.75,
         duration: 0.08,
@@ -188,13 +120,11 @@ const ClothingConfigurator = () => {
       },
     );
 
-    // Model rotation
     gsap.to(imageRef.current, {
       duration: 0.25,
       ease: "power2.inOut",
       onComplete: () => {
         setAngle(nextAngle);
-
         gsap.set(imageRef.current, {
           rotate: 0,
         });
@@ -205,14 +135,9 @@ const ClothingConfigurator = () => {
   // =================================
   // TOPWEAR
   // =================================
-
   const nextTopwear = () => {
     setTopwearIndex((prev) => (prev + 1) % topwear.length);
-
-    // Whenever clothing changes,
-    // start from the front
     setAngle(0);
-
     gsap.set(imageRef.current, {
       rotate: 0,
     });
@@ -220,10 +145,7 @@ const ClothingConfigurator = () => {
 
   const previousTopwear = () => {
     setTopwearIndex((prev) => (prev - 1 + topwear.length) % topwear.length);
-
-    // Start from front
     setAngle(0);
-
     gsap.set(imageRef.current, {
       rotate: 0,
     });
@@ -232,7 +154,6 @@ const ClothingConfigurator = () => {
   // =================================
   // BOTTOMWEAR
   // =================================
-
   const nextBottomwear = () => {
     setBottomwearIndex((prev) => (prev + 1) % bottomwear.length);
   };
@@ -246,7 +167,6 @@ const ClothingConfigurator = () => {
   // =================================
   // SHOES
   // =================================
-
   const nextShoes = () => {
     setShoesIndex((prev) => (prev + 1) % shoes.length);
   };
@@ -343,7 +263,7 @@ const ClothingConfigurator = () => {
             <div className="h-full overflow-hidden">
               <img
                 ref={imageRef}
-                src={models[angle]}
+                src={getModelImage(angle)}
                 alt={`${gender} model`}
                 className="h-full object-contain"
               />
